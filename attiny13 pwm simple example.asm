@@ -8,7 +8,7 @@
 .def PWM = r21
 
 init:
-  	ldi temp, 0b0000001	                     ; load bit for PB0 into r16    
+  	ldi temp, 0b0000001	                    ; load bit for PB0 into r20
   	out DDRB, temp                              ; PB0 as output
   	ldi temp, 1<<COM0A1 | 1<<WGM01 | 1<<WGM00   ; PWM setup for OCR0A 
   	out TCCR0A, temp
