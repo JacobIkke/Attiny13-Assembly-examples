@@ -3,7 +3,6 @@
 ;
 ; Created: 27-12-2022 16:46:01
 ; Author : PeetGaming
-; My channel on YT: https://www.youtube.com/@peetgaming
 ;
 ;PB0 = CLK
 ;PB1 = MOSI
