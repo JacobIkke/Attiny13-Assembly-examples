@@ -8,10 +8,10 @@
 .include "tn13def.inc"
 
 init_gpio:
-    	ldi r16, 0b00000011			; load bit for PB3 into r16    
-    	out DDRB, r16               		; PB3 as output
-	ldi r16, 0b00010000	
-	out PORTB, r16
+    	ldi r16, 0b00000011			; load bit for PB0 and PB1 into r16    
+    	out DDRB, r16               		; set PB0 and PB1 as output
+	ldi r16, 0b00010000			; reuse r16 for setting the bits PB4 in the port registsre
+	out PORTB, r16				; set PB4 as input
 
 main:
     	sbi PORTB, PB1              		; Heart beat HIGH
@@ -20,7 +20,7 @@ main:
 	rcall delay_long			; Delay
 
 	in r20, PINB				; Read pins of port B
-	ldi r19, 4				; N of shifts
+	ldi r19, 4				; N for shift loop
 	rcall shift_right			; Shift left by N time stored in r19
 	andi r20, 1				; Mask, & 1
 
