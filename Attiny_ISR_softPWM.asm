@@ -14,21 +14,21 @@
 
 .def counter = r22
 
-;Interrupt Vectors
-.org	0x000 rjmp RESET ; Reset Handler
-;.org	0x001 rjmp EXT_INT0 ; IRQ0 Handler
+;Interrupt Vectors, see datasheet
+.org	0x000 rjmp RESET 			; Reset Handler
+;.org	0x001 rjmp EXT_INT0 			; IRQ0 Handler
 ;.org	0x002 rjmp PCINT0
-.org	0x003 rjmp TIM0_OVF ; Timer0 Overflow Handler
+.org	0x003 rjmp TIM0_OVF 			; Timer0 Overflow Handler
 ;.org	0x004 rjmp EE_RDY
-;.org	0x005 rjmp ANA_COMP ; Analog Comparator Handler
-;.org	0x006 rjmp TIM0_COMPA ; Timer0 CompareA Handler
-;.org	0x007 rjmp TIM0_COMPB ; Timer0 CompareB Handler
-;.org	0x008 rjmp WATCHDOG ; Watchdog Interrupt Handler
-;.org	0x009 rjmp ADC ; ADC Conversion Handler
+;.org	0x005 rjmp ANA_COMP 			; Analog Comparator Handler
+;.org	0x006 rjmp TIM0_COMPA 			; Timer0 CompareA Handler
+;.org	0x007 rjmp TIM0_COMPB 			; Timer0 CompareB Handler
+;.org	0x008 rjmp WATCHDOG 			; Watchdog Interrupt Handler
+;.org	0x009 rjmp ADC 				; ADC Conversion Handler
 
 
-.org 0x00A
-//initial settup
+.org 0x00A 					
+;Settup/init
 RESET: 
     	ldi r16, 0b00011111;			; Set RGB pins as output
     	out DDRB, r16				; Set initial color		
@@ -38,11 +38,11 @@ RESET:
    	 out TCCR0B, r16			; Set Timer0 for overflow interrupt
     	ldi r16, (1 << TOIE0)			; load bit for TOIE0 register into r16
     	out TIMSK0, r16				; set TIMSK0 
-    	sei		
-						; Enable interrupts
+    	sei					; Enable interrupts
+						
 	ldi green_pwm, 255			; main loop starts with green decrease loop so we pre load green with 255
 
-//main program
+;main program
 main_loop:
 
 	red_to_green:
@@ -68,7 +68,7 @@ main_loop:
 
 	rjmp main_loop				; jump back to main loop, ininity loop
 
-//Delay loop
+;Delay loop
 delay_loop:					; The outer loop
     ldi r23,255                 		; Initial the timers values
     ldi r24,64
@@ -82,7 +82,7 @@ dec r24                     			; if r16 is not equal that dec r17 255, 255 x 1 c
 ;Interrupt Service Routines
 TIM0_OVF:		
 	push red_pwm				; save the  registers
-	push green_pwm
+	push green_pwm				
 	push blue_pwm
 
  	red:
