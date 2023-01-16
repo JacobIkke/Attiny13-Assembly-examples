@@ -8,9 +8,9 @@
 .equ pin_green = PB1				; PWM pins 
 .equ pin_blue = PB2				; PWM pins 
 
-.def red_pwm = r19				; resisters to store PWM value
-.def green_pwm = r20				; resisters to store PWM value
-.def blue_pwm = r21				; resisters to store PWM value
+.def red_pwm = r19				; Register to store PWM value
+.def green_pwm = r20				; Register to store PWM value
+.def blue_pwm = r21				; Register to store PWM value
 
 .def counter = r22
 
@@ -35,35 +35,35 @@ RESET:
 	ldi r16, 0b00011111			; Set RGB pins as output
     	out PORTB, r16				; Set initial color											
     	ldi r16, (1 << CS00)			; Load bit CS00 for TCCR0B into r16 
-   	 out TCCR0B, r16			; Set Timer0 for overflow interrupt
+   	out TCCR0B, r16				; Set Timer0 for overflow interrupt
     	ldi r16, (1 << TOIE0)			; load bit for TOIE0 register into r16
     	out TIMSK0, r16				; set TIMSK0 
     	sei					; Enable interrupts
 						
-	ldi green_pwm, 255			; main loop starts with green decrease loop so we pre load green with 255
+	ldi green_pwm, 255			; Main loop starts with green dec, so we preload green with 255
 
 ;main program
 main_loop:
 
 	red_to_green:
 		rcall delay_loop		; Call the delay routine, short delay
-		inc red_pwm			; increase channel red
-		dec green_pwm			; decrease channel green
-		cpi green_pwm, 0		; check if green is 0
-		brne red_to_green		; if green is 0, if it is 0 than jump to next color loop
+		inc red_pwm			; Increase channel red
+		dec green_pwm			; Decrease channel green
+		cpi green_pwm, 0		; Check if green is 0
+		brne red_to_green		; If green is 0, if it is 0 than jump to next color loop
 
 	green_to_blue:
 		rcall delay_loop		; Call the delay routine, short delay
-		inc blue_pwm			; increase channel blue
-		dec red_pwm			; decrease channel red
-		cpi red_pwm, 0			; check if red is 0
+		inc blue_pwm			; Increase channel blue
+		dec red_pwm			; Decrease channel red
+		cpi red_pwm, 0			; Check if red is 0
 		brne green_to_blue		; if red is 0, if it is 0 than jump to next color loop
 
 	blue_to_green:
 		rcall delay_loop		; Call the delay routine, short delay
-		inc green_pwm			; increase channel green
+		inc green_pwm			; Increase channel green
 		dec blue_pwm			; decrease channel blue
-		cpi blue_pwm, 0			; check if blue is 0
+		cpi blue_pwm, 0			; Check if blue is 0
 		brne blue_to_green		; if green is 0, if it is 0 than jump to next color loop
 
 	rjmp main_loop				; jump back to main loop, ininity loop
@@ -73,10 +73,10 @@ delay_loop:					; The outer loop
     ldi r23,255                 		; Initial the timers values
     ldi r24,64
 inner_loop:					; The inner loop
-    dec r23                     		; dec r16 255 times, 255 x 1 cycle delay
-    brne inner_loop				; branch if not equal to beginning of timerb
-dec r24                     			; if r16 is not equal that dec r17 255, 255 x 1 cycle delay
-    brne inner_loop				; branch if not equal to beginning of timer2 - 1 clock * 256, then 1
+    dec r23                     		; Dec r16 255 times, 255 x 64 cycle delay
+    brne inner_loop				; Branch if not equal to beginning of timerb
+dec r24                     			; If r23 is not equal that dec r24
+    brne inner_loop				; Branch if not equal 
     ret                         		; End after 255 * 64 cycles 
 
 ;Interrupt Service Routines
@@ -103,7 +103,7 @@ TIM0_OVF:
 	
 	blue:
 		cp counter, blue_pwm  
-		brlo blue_off			; if the counter is lower than blue_pwm then jump to end, led stays on for now
+		brlo blue_off			; If the counter is lower than blue_pwm then jump to end, led stays on for now
 		sbi PORTB, pin_blue		; Turn on blue LED
 		rjmp end_compare		; Jump to label end
 	blue_off:
@@ -111,16 +111,16 @@ TIM0_OVF:
 
 	end_compare:
 
-    inc counter					; counter++
-    cpi counter, 0xFF				; Comaper PWM counter 
+    inc counter					; Counter++
+    cpi counter, 0xFF				; Compare PWM counter 
     breq reset_counter				; If equal branch to reset:  ;reset = load counter with 0x00
 	
 	end:
 	pop blue_pwm				; restore the registers
 	pop green_pwm
 	pop red_pwm
-    reti
+    reti					; End Interrupt Service Routines
 
-reset_counter:					; reset the counter
-	ldi r22, 0x00				; load counter with 0x00
+reset_counter:					; Reset the counter
+	ldi r22, 0x00				; Load counter with 0x00
 	rjmp end				; jump back to end or ISR
