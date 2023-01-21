@@ -15,8 +15,8 @@
 ; .org	0x003 rjmp TIM0_OVF		; Timer0 Overflow Handler
 ;.org	0x004 rjmp EE_RDY
 ;.org	0x005 rjmp ANA_COMP		; Analog Comparator Handler
-.org	0x006 rjmp TIM0_COMPA	; Timer0 CompareA Handler
-;.org	0x007 rjmp TIM0_COMPB	; Timer0 CompareB Handler
+.org	0x006 rjmp TIM0_COMPA		; Timer0 CompareA Handler
+;.org	0x007 rjmp TIM0_COMPB		; Timer0 CompareB Handler
 ;.org	0x008 rjmp WATCHDOG		; Watchdog Interrupt Handler
 ;.org	0x009 rjmp ADC			; ADC Conversion Handler
 
@@ -65,10 +65,10 @@ TIM0_COMPA:
 
 ; Reset counter and Toggle the state of PB1
 reset:
-    ldi counter, 0x00		; Toggle the state of PB1
-    in r16, PORTB		; Read the current state of PORTB into r16
-    ldi r17, (1<<PB1)   	; Load the value for PB1 into r17
-    eor r16, r17		; Toggle the state of PB1 in r16
-    out PORTB, r16		; Write the updated value of r16 back to PORTB
-    rjmp end			; Jump back to ISR and finish the interupt. 
+    	ldi counter, 0x00	; Toggle the state of PB1
+    	in r16, PORTB		; Read the current state of PORTB into r16
+    	ldi r17, (1<<PB1)   	; Load the value for PB1 into r17
+    	eor r16, r17		; Toggle the state of PB1 in r16
+   	out PORTB, r16		; Write the updated value of r16 back to PORTB
+    	rjmp end		; Jump back to ISR and finish the interupt. 
 
