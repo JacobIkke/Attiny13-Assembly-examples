@@ -2,7 +2,7 @@
 ; Assembly Software SPI example For Attiny13.asm
 ;
 ; Created: 27-12-2022 16:46:01
-; Author : PeetGaming
+; Author : PeetHobby
 ;
 ;PB0 = CLK
 ;PB1 = MOSI
